@@ -3,13 +3,29 @@
   "name": "Chrome ext task scheduler",
   "version": "1.0",
   "action": {
-    "default_popup": "index.html"
+    "default_popup": "index.html",
+    "default_title":"Chrome ext task scheduler",
+    "default_icon": {
+      "48": "logo192.png"
+    }
   },
-  "permissions": ["tabs", "activeTab"],
+  "permissions": ["tabs", "activeTab", "externally_connectable"],
   "background": {
     "service_worker": "background.js"
   },
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["./static/js/content.js"]
+    }
+  ],
+  "externally_connectable": {
+    "matches": ["*://localhost/*"]
+  },
   "content_security_policy": {
     "extension_pages": "script-src 'self'; object-src 'self'"
+  },
+  "icons": {
+    "48": "logo192.png"
   }
 }

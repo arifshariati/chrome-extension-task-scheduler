@@ -1,5 +1,14 @@
 {
-  "extends": ["react-app", "react-app/jest"],
+  "extends": ["react-app", "react-app/jest", "plugin:react/recommended"],
+  "rules": {
+    "no-restricted-globals": [
+      "error",
+      {
+        "name": "window",
+        "message": "Use 'self' instead of 'window' in content scripts."
+      }
+    ]
+  },
   "globals": {
     "chrome": "readonly"
   }

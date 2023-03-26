@@ -1,25 +1,21 @@
-import axios from "axios";
+const allowedTarget = "chrome-extension";
+const backendBaseUrl = "http://localhost:3001";
 
-const makeApiCall = async (): Promise<any> => {
+const makeApiCall = async (): Promise<void> => {
   try {
-    const response = await axios.get("http://localhost:3001");
-    return response.data;
+    const response = await fetch(backendBaseUrl);
+    if (!response.ok) {
+      console.log(`HTTP error! Status: ${response.status}`);
+    }
   } catch (error: any) {
-    throw new Error(error.message);
+    console.log(`ERROR: ${error.message}`);
   }
 };
 
 chrome.runtime.onMessage.addListener((request: any, sender: chrome.runtime.MessageSender, sendResponse: (response: any) => void) => {
-  // Validate the incoming message
-  if (request.type === "your_message_type") {
-    // Perform the API call using the makeApiCall function
-    makeApiCall()
-      .then((data) => {
-        sendResponse({ data });
-      })
-      .catch((error) => {
-        sendResponse({ error: error.message });
-      });
-    return true; // Keep the message channel open for async sendResponse
+  if (request.target === allowedTarget) {
+    makeApiCall();
   }
 });
+
+export {};

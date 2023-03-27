@@ -1,8 +1,10 @@
-import axios from "axios";
-export const makeApiCall = async () => {
+const baseUrl = "http://localhost:3001";
+const makeApiCall = async (endpoint: string): Promise<void> => {
   try {
-    await axios.get("http://localhost:3001");
+    await fetch(`${baseUrl}/${endpoint}`);
   } catch (error: any) {
     console.log(error.message);
   }
 };
+
+export default makeApiCall;

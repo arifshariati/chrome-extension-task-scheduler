@@ -1,15 +1,19 @@
 import { taskTypeEnum, scheduleTypeEnum, actionTypeEnum } from "../enums";
 
-interface IScheduleConfig {
+export interface IScheduleConfig {
   hour: number;
   minute: number;
 }
 
-interface IChromeExtensionPayload {
+export interface IPayload {
   actionType: actionTypeEnum;
   taskType: taskTypeEnum;
   scheduleType: scheduleTypeEnum;
   scheduleConfig: IScheduleConfig[];
 }
 
-export default IChromeExtensionPayload;
+export interface ITask {
+  actionType: actionTypeEnum;
+  taskType: taskTypeEnum;
+  scheduleType: scheduleTypeEnum;
+}

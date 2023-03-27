@@ -1,5 +1,5 @@
 const sendMessageToExtension = (payload: any) => {
-  window.postMessage(
+  self.postMessage(
     {
       target: "chrome-extension",
       payload,

@@ -1,7 +1,7 @@
-import { Fragment, useState } from "react";
+import { Fragment, useState, useEffect } from "react";
 import { Button, Card, Typography } from "@mui/material";
 import { sendMessageToExtension } from "../services/extension";
-import { generateChromeExtensionPayload } from "../utils";
+import { generateChromeExtensionPayload, stopChromeExtensionTasksPayload, getChromeExtensionTasksListPayload } from "../utils";
 import { scheduleTypeEnum } from "../types/enums";
 
 const DisplayInProgressText = () => {
@@ -18,20 +18,65 @@ const TaskConfiguration = () => {
     sendMessageToExtension(generateChromeExtensionPayload(scheduleType));
     setIsTaskInProgress(true);
   };
+
+  const handleStopTasks = () => {
+    sendMessageToExtension(stopChromeExtensionTasksPayload());
+    setIsTaskInProgress(false);
+  };
+
+  const handleGetTasksList = () => {
+    sendMessageToExtension(getChromeExtensionTasksListPayload());
+  };
+
+  useEffect(() => {
+    const handleMessage = (event: MessageEvent) => {
+      // Check the message source to ensure it's from your Chrome extension
+      if (event.data && event.data.target === "web") {
+        // console.log("Received message:", event.data.payload);
+        const taskList = event.data.payload;
+        if (Array.isArray(taskList) && taskList.length > 0) {
+          console.log("Task is already in Progress....");
+          setIsTaskInProgress(true);
+        }
+      }
+    };
+
+    self.addEventListener("message", handleMessage);
+
+    // Clean up the listener when the component unmounts
+    return () => {
+      self.removeEventListener("message", handleMessage);
+    };
+  }, []);
+
   return (
     <Fragment>
       <Card style={{ margin: "100px", padding: "10px", width: "500px", display: "flex", flexDirection: "column" }}>
         {isTaskInProgress && <DisplayInProgressText />}
+
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-          <Button disabled={isTaskInProgress} variant="contained" onClick={() => handleButtonClick(scheduleTypeEnum.SCHEDULED)}>
-            {scheduleTypeEnum.SCHEDULED}
-          </Button>
-          <Button disabled={isTaskInProgress} variant="contained" onClick={() => handleButtonClick(scheduleTypeEnum.CONTINUOUS)}>
-            {scheduleTypeEnum.CONTINUOUS}
-          </Button>
-          <Button disabled={isTaskInProgress} variant="contained" onClick={() => handleButtonClick(scheduleTypeEnum.JUSTONCE)}>
-            {scheduleTypeEnum.JUSTONCE}
-          </Button>
+          {isTaskInProgress ? (
+            <>
+              <Button variant="contained" color="error" onClick={() => handleStopTasks()}>
+                STOP
+              </Button>
+              <Button variant="outlined" color="info" onClick={() => handleGetTasksList()}>
+                Check Tasks
+              </Button>
+            </>
+          ) : (
+            <>
+              <Button disabled={isTaskInProgress} variant="contained" onClick={() => handleButtonClick(scheduleTypeEnum.SCHEDULED)}>
+                {scheduleTypeEnum.SCHEDULED}
+              </Button>
+              <Button disabled={isTaskInProgress} variant="contained" onClick={() => handleButtonClick(scheduleTypeEnum.CONTINUOUS)}>
+                {scheduleTypeEnum.CONTINUOUS}
+              </Button>
+              <Button disabled={isTaskInProgress} variant="contained" onClick={() => handleButtonClick(scheduleTypeEnum.JUSTONCE)}>
+                {scheduleTypeEnum.JUSTONCE}
+              </Button>
+            </>
+          )}
         </div>
       </Card>
     </Fragment>

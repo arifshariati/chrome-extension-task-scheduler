@@ -1,47 +1,56 @@
-import { taskTypeEnum, scheduleTypeEnum } from "../types/enums";
+import { taskTypeEnum, scheduleTypeEnum, actionTypeEnum } from "../types/enums";
 import IChromeExtensionPayload from "../types/interfaces";
 
 const generateChromeExtensionPayload = (scheduleType: scheduleTypeEnum): IChromeExtensionPayload => {
   let payload = {
+    actionType: actionTypeEnum.SCHEDULE,
     taskType: taskTypeEnum.taskType1,
     scheduleType: scheduleType,
   } as IChromeExtensionPayload;
 
   const now = new Date();
-  
+
   switch (scheduleType) {
     case scheduleTypeEnum.CONTINUOUS:
       payload = {
         ...payload,
         scheduleConfig: [
-          { hour: 4, minute: 34 },
-          { hour: 10, minute: 5 },
+          { hour: now.getHours(), minute: now.getMinutes() + 2 },
+          { hour: now.getHours() + 1, minute: now.getMinutes() + 2 },
         ],
       };
       break;
     case scheduleTypeEnum.JUSTONCE:
       payload = {
         ...payload,
-        scheduleConfig: [{ hour: now.getHours(), minute: now.getMinutes() + 1 }],
+        scheduleConfig: [{ hour: now.getHours(), minute: now.getMinutes() + 2 }],
       };
       break;
     case scheduleTypeEnum.SCHEDULED:
       payload = {
         ...payload,
         scheduleConfig: [
-          { hour: 2, minute: 14 },
-          { hour: 12, minute: 35 },
+          { hour: now.getHours(), minute: now.getMinutes() + 2 },
+          { hour: now.getHours() + 1, minute: now.getMinutes() + 2 },
         ],
       };
       break;
     default:
       payload = {
         ...payload,
-        scheduleConfig: [{ hour: now.getHours(), minute: now.getMinutes() + 1 }],
+        scheduleConfig: [{ hour: now.getHours(), minute: now.getMinutes() + 2 }],
       };
       break;
   }
   return payload;
 };
 
-export { generateChromeExtensionPayload };
+const stopChromeExtensionTasksPayload = (): Partial<IChromeExtensionPayload> => {
+  return { actionType: actionTypeEnum.STOP };
+};
+
+const getChromeExtensionTasksListPayload = (): Partial<IChromeExtensionPayload> => {
+  return { actionType: actionTypeEnum.GET_TASK_LIST };
+};
+
+export { generateChromeExtensionPayload, stopChromeExtensionTasksPayload, getChromeExtensionTasksListPayload };

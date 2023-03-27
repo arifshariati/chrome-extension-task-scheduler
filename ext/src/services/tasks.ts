@@ -1,4 +1,5 @@
 import { IScheduleConfig, IPayload, ITask } from "../types/interfaces";
+import { scheduleTypeEnum } from "../types/enums";
 import makeApiCall from "./backend";
 
 interface ITaskList {
@@ -32,6 +33,13 @@ const tasks = () => {
 
   const stopTasks = () => (taskList = {});
 
+  const removeTask = (hashMap: string, index: number) => {
+    // remove of justonce type
+    if (taskList[hashMap][index].scheduleType === scheduleTypeEnum.JUSTONCE) {
+      taskList[hashMap] = taskList[hashMap].slice(1, index);
+    }
+  };
+
   const executeTasks = (): void => {
     try {
       const now = new Date();
@@ -42,8 +50,9 @@ const tasks = () => {
       if (!tasksToExecute) return console.log(`No task to execute now (${hashMap})`);
 
       // Step 2: execute tasks - API calls
-      for (const taskToExecture of tasksToExecute) {
-        makeApiCall(taskToExecture.taskType);
+      for (const [key, value] of tasksToExecute.entries()) {
+        makeApiCall(value.taskType);
+        removeTask(hashMap, key);
       }
     } catch (error: any) {
       console.log(`Error: ${error.message}`);

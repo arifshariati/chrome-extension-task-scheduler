@@ -1,4 +1,4 @@
-import { taskTypeEnum, scheduleTypeEnum } from "../enums";
+import { taskTypeEnum, scheduleTypeEnum, actionTypeEnum } from "../enums";
 
 interface IScheduleConfig {
   hour: number;
@@ -6,6 +6,7 @@ interface IScheduleConfig {
 }
 
 interface IChromeExtensionPayload {
+  actionType: actionTypeEnum;
   taskType: taskTypeEnum;
   scheduleType: scheduleTypeEnum;
   scheduleConfig: IScheduleConfig[];

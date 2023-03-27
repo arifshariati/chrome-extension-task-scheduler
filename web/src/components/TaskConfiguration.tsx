@@ -1,7 +1,7 @@
 import { Fragment, useState } from "react";
 import { Button, Card, Typography } from "@mui/material";
 import { sendMessageToExtension } from "../services/extension";
-import { generateChromeExtensionPayload } from "../utils";
+import { generateChromeExtensionPayload, stopChromeExtensionTasksPayload } from "../utils";
 import { scheduleTypeEnum } from "../types/enums";
 
 const DisplayInProgressText = () => {
@@ -18,20 +18,34 @@ const TaskConfiguration = () => {
     sendMessageToExtension(generateChromeExtensionPayload(scheduleType));
     setIsTaskInProgress(true);
   };
+
+  const handleStopTasks = () => {
+    sendMessageToExtension(stopChromeExtensionTasksPayload());
+    setIsTaskInProgress(false);
+  };
   return (
     <Fragment>
       <Card style={{ margin: "100px", padding: "10px", width: "500px", display: "flex", flexDirection: "column" }}>
         {isTaskInProgress && <DisplayInProgressText />}
+
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-          <Button disabled={isTaskInProgress} variant="contained" onClick={() => handleButtonClick(scheduleTypeEnum.SCHEDULED)}>
-            {scheduleTypeEnum.SCHEDULED}
-          </Button>
-          <Button disabled={isTaskInProgress} variant="contained" onClick={() => handleButtonClick(scheduleTypeEnum.CONTINUOUS)}>
-            {scheduleTypeEnum.CONTINUOUS}
-          </Button>
-          <Button disabled={isTaskInProgress} variant="contained" onClick={() => handleButtonClick(scheduleTypeEnum.JUSTONCE)}>
-            {scheduleTypeEnum.JUSTONCE}
-          </Button>
+          {isTaskInProgress ? (
+            <Button variant="contained" color="error" onClick={() => handleStopTasks()}>
+              STOP
+            </Button>
+          ) : (
+            <>
+              <Button disabled={isTaskInProgress} variant="contained" onClick={() => handleButtonClick(scheduleTypeEnum.SCHEDULED)}>
+                {scheduleTypeEnum.SCHEDULED}
+              </Button>
+              <Button disabled={isTaskInProgress} variant="contained" onClick={() => handleButtonClick(scheduleTypeEnum.CONTINUOUS)}>
+                {scheduleTypeEnum.CONTINUOUS}
+              </Button>
+              <Button disabled={isTaskInProgress} variant="contained" onClick={() => handleButtonClick(scheduleTypeEnum.JUSTONCE)}>
+                {scheduleTypeEnum.JUSTONCE}
+              </Button>
+            </>
+          )}
         </div>
       </Card>
     </Fragment>

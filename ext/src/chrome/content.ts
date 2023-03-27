@@ -3,17 +3,21 @@ const allowedTarget = "chrome-extension";
 
 self.addEventListener("message", (event) => {
   if (event.origin === allowedSource && event.data.target === allowedTarget) {
-    chrome.runtime.sendMessage(event.data);
+    chrome.runtime.sendMessage(event.data, (response) => {
+      if (response?.target === "contentScript") {
+        sendMessageToWeb(response?.payload);
+      }
+    });
   }
 });
 
 const sendMessageToWeb = (payload: any) => {
-  self.top?.postMessage(
+  self.postMessage(
     {
       target: "web",
       payload,
     },
-    "*"
+    allowedSource
   );
 };
 

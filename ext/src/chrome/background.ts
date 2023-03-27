@@ -1,4 +1,3 @@
-import sendMessageToWeb from "./content";
 import { tasks } from "../services";
 import { actionTypeEnum } from "../types/enums";
 
@@ -14,7 +13,7 @@ chrome.runtime.onMessage.addListener((request: any, sender: chrome.runtime.Messa
   if (payload?.actionType === actionTypeEnum.GET_TASK_LIST) {
     console.log(`incoming request ${actionTypeEnum.GET_TASK_LIST}`);
     const taskList = tasksInstance.getTaskList();
-    sendMessageToWeb(taskList);
+    sendResponse({ target: "contentScript", payload: taskList });
 
     return;
   }

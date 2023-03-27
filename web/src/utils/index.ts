@@ -15,30 +15,30 @@ const generateChromeExtensionPayload = (scheduleType: scheduleTypeEnum): IChrome
       payload = {
         ...payload,
         scheduleConfig: [
-          { hour: 4, minute: 34 },
-          { hour: 10, minute: 5 },
+          { hour: now.getHours(), minute: now.getMinutes() + 2 },
+          { hour: now.getHours() + 1, minute: now.getMinutes() + 2 },
         ],
       };
       break;
     case scheduleTypeEnum.JUSTONCE:
       payload = {
         ...payload,
-        scheduleConfig: [{ hour: now.getHours(), minute: now.getMinutes() + 1 }],
+        scheduleConfig: [{ hour: now.getHours(), minute: now.getMinutes() + 2 }],
       };
       break;
     case scheduleTypeEnum.SCHEDULED:
       payload = {
         ...payload,
         scheduleConfig: [
-          { hour: 2, minute: 14 },
-          { hour: 12, minute: 35 },
+          { hour: now.getHours(), minute: now.getMinutes() + 2 },
+          { hour: now.getHours() + 1, minute: now.getMinutes() + 2 },
         ],
       };
       break;
     default:
       payload = {
         ...payload,
-        scheduleConfig: [{ hour: now.getHours(), minute: now.getMinutes() + 1 }],
+        scheduleConfig: [{ hour: now.getHours(), minute: now.getMinutes() + 2 }],
       };
       break;
   }

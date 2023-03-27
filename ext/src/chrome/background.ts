@@ -1,27 +1,28 @@
-const allowedTarget = "chrome-extension";
-const backendBaseUrl = "http://localhost:3001";
-const stopTasks = "STOP";
+import tasks from "../services/tasks";
+import { actionTypeEnum } from "../types/enums";
 
-const makeApiCall = async (): Promise<void> => {
-  try {
-    const response = await fetch(backendBaseUrl);
-    if (!response.ok) {
-      console.log(`HTTP error! Status: ${response.status}`);
-    }
-  } catch (error: any) {
-    console.log(`ERROR: ${error.message}`);
-  }
-};
+const interval = 60 * 1000;
+const allowedTarget = "chrome-extension";
+
+const tasksInstance = tasks();
 
 chrome.runtime.onMessage.addListener((request: any, sender: chrome.runtime.MessageSender, sendResponse: (response: any) => void) => {
-  if (request?.payload?.actionType === stopTasks) {
-    console.log(request.payload);
-    console.log("STOP tasks triggerd");
+  const { target, payload } = request;
+  // handle stop task request
+  if (payload?.actionType === actionTypeEnum.STOP) {
+    tasksInstance.stopTasks();
+    const taskList = tasksInstance.getTaskList();
+    console.log(taskList);
     return;
   }
-  if (request.target === allowedTarget) {
-    makeApiCall();
+
+  // handle schedule task request
+  if (target === allowedTarget) {
+    tasksInstance.addTask(request.payload);
+
+    const taskList = tasksInstance.getTaskList();
+    console.log(taskList);
   }
 });
 
-export {};
+setInterval(tasksInstance.executeTasks, interval);

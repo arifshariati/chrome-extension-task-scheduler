@@ -49,4 +49,8 @@ const stopChromeExtensionTasksPayload = (): Partial<IChromeExtensionPayload> => 
   return { actionType: actionTypeEnum.STOP };
 };
 
-export { generateChromeExtensionPayload, stopChromeExtensionTasksPayload };
+const getChromeExtensionTasksListPayload = (): Partial<IChromeExtensionPayload> => {
+  return { actionType: actionTypeEnum.GET_TASK_LIST };
+};
+
+export { generateChromeExtensionPayload, stopChromeExtensionTasksPayload, getChromeExtensionTasksListPayload };

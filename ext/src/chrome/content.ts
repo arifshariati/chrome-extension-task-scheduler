@@ -7,4 +7,14 @@ self.addEventListener("message", (event) => {
   }
 });
 
-export {};
+const sendMessageToWeb = (payload: any) => {
+  self.top?.postMessage(
+    {
+      target: "web",
+      payload,
+    },
+    "*"
+  );
+};
+
+export default sendMessageToWeb;

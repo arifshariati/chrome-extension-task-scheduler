@@ -32,9 +32,8 @@ const TaskConfiguration = () => {
     const handleMessage = (event: MessageEvent) => {
       // Check the message source to ensure it's from your Chrome extension
       if (event.data && event.data.target === "web") {
-        // console.log("Received message:", event.data.payload);
         const taskList = event.data.payload;
-        if (Array.isArray(taskList) && taskList.length > 0) {
+        if (typeof taskList === "object" && Object.keys(taskList).length > 0) {
           console.log("Task is already in Progress....");
           setIsTaskInProgress(true);
         }
@@ -43,6 +42,7 @@ const TaskConfiguration = () => {
 
     self.addEventListener("message", handleMessage);
 
+    handleGetTasksList();
     // Clean up the listener when the component unmounts
     return () => {
       self.removeEventListener("message", handleMessage);

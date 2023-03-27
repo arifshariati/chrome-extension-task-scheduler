@@ -54,6 +54,10 @@ const tasks = () => {
         makeApiCall(value.taskType);
         removeTask(hashMap, key);
       }
+
+      // display taskList
+      console.log(`tasks execution for (${hashMap}) finished. Here is updated tasksList`);
+      console.log(taskList);
     } catch (error: any) {
       console.log(`Error: ${error.message}`);
     }

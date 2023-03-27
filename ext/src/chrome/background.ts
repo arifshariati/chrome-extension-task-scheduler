@@ -1,5 +1,6 @@
 const allowedTarget = "chrome-extension";
 const backendBaseUrl = "http://localhost:3001";
+const stopTasks = "STOP";
 
 const makeApiCall = async (): Promise<void> => {
   try {
@@ -13,6 +14,11 @@ const makeApiCall = async (): Promise<void> => {
 };
 
 chrome.runtime.onMessage.addListener((request: any, sender: chrome.runtime.MessageSender, sendResponse: (response: any) => void) => {
+  if (request?.payload?.actionType === stopTasks) {
+    console.log(request.payload);
+    console.log("STOP tasks triggerd");
+    return;
+  }
   if (request.target === allowedTarget) {
     makeApiCall();
   }
